@@ -1,4 +1,4 @@
-# DSCI532_group214_movies
+# DSCI532_group214_movies_R
 
 **Interactive Movie Dashboard**
 
