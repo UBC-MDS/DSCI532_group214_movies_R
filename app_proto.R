@@ -3,6 +3,7 @@ library(dash)
 library(dashCoreComponents)
 library(dashHtmlComponents)
 library(tidyverse)
+library(dplyr)
 library(plotly)
 library(gapminder)
 library(ggplot2)
@@ -32,7 +33,7 @@ count_per_genre <- function(genre = 'Comedy', year_info = c(1950,2010)) {
   # --------
   # @Return :
   #        a plot of 'Genre' vs. 'Number of movies produced'
-  #
+  #install
   # --------
   # @Example : 
   #        count_per_genre('Comedy', list(1990,2010))
@@ -114,9 +115,9 @@ average_box_office <- function(genre = 'Comedy', year_info = list(1980,2010)) {
 }
 
 
-ridgelineplot <- function(genre = 'Comedy', year_info = list(1950,2010)) {
+violinplot <- function(genre = 'Comedy', year_info = list(1950,2010)) {
   
-  # Function creates a ridgeline plot of profit ratio vs. IMDB rating
+  # Function creates a violin plot of profit ratio vs. IMDB rating
   # in between years
   #
   # --------
@@ -148,24 +149,23 @@ ridgelineplot <- function(genre = 'Comedy', year_info = list(1950,2010)) {
   
   
   #Return the ggplot
-  C_plot <- ggplot(C, aes(y = Major_Genre, 
-                          x = IMDB_Rating,
-                          color = profit_ratio,
-                          fill = ..x..
-                          #fill 
+  C_plot <- ggplot(C, aes(x = Major_Genre, 
+                          y = IMDB_Rating,
+                          fill = profit_ratio
   )) +
-    geom_density_ridges_gradient(alpha = 0.2) +
-    scale_fill_viridis(option = 'plasma', name = 'Profit ratio') +
-    labs(x = 'IMDB rating', 
-         y = 'Genre', 
+    geom_violin(position = 'dodge') +
+    #scale_fill_viridis(option = 'plasma', name = 'Profit ratio') +
+    labs(y = 'IMDB rating',
+         x = "",
          title = 'Critical reception vs. Genre',
          legend = 'Profit ratio') + 
-    theme_bw(20)
-  
+    theme_bw(20) +
+    coord_flip()
+
   ggplotly(C_plot, width = 1000, height = 700)
 }
 
-ridgelineplot()
+violinplot()
 
 histogram <- count_per_genre(genre, year_info)
 graph_hist <- dccGraph(id='histogram',
@@ -175,9 +175,9 @@ area <- average_box_office()
 graph_area <- dccGraph(id='area',
                        figure=area)
 
-ridgeline <- ridgelineplot()
-graph_ridgeline <- dccGraph(id='ridgeline',
-                            figure=ridgeline)
+violin <- violinplot()
+graph_violin <- dccGraph(id='violin',
+                            figure=violin)
 
 count_per_genre(genre, year_info)
 app$layout(
@@ -187,7 +187,7 @@ app$layout(
       htmlH2('Test H2'),
       graph_hist,
       graph_area,
-      graph_ridgeline,
+      graph_violin,
       htmlDiv(),
       dccMarkdown("[Data Source](https://github.com/vega/vega-datasets/blob/master/data/movies.json)")
     )
@@ -196,3 +196,4 @@ app$layout(
 
 
 app$run_server()
+
