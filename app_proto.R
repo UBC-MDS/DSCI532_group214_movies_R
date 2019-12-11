@@ -57,15 +57,16 @@ count_per_genre <- function(genre = 'Comedy', year_info = c(1950,2010)) {
   #Return the ggplot
   A <- ggplot(A, aes(Major_Genre, count_per_genre, fill = to_highlight)) +
     geom_bar(stat= 'identity', position = 'dodge') +
-    scale_fill_manual(values = c("Yes" = "orange", "No" = "Grey"), guide = FALSE) +
+    scale_fill_manual(values = c("Yes" = "orange", "No" = "Grey")) +
     labs(y = "Number of movies produced", x = "", title = 'Popularity of Genres') +
-    coord_flip() + 
-    theme_bw()
-
+    coord_flip() 
+  
+    A <- A + theme(legend.position = 'none')
+    
     ggplotly(A)
 }
 
-
+count_per_genre
 
 
 average_box_office <- function(genre = 'Comedy', year_info = list(1980,2010)) {
@@ -106,10 +107,17 @@ average_box_office <- function(genre = 'Comedy', year_info = list(1980,2010)) {
   #Return the ggplot
   B_plot <- ggplot(B, aes(year, amount, fill = Gross)) +
     geom_area() +
-    labs(x = "Year", y = 'Dollars', title = 'Average box office')  +
-    theme_bw()
+    labs(x = "Year", y = 'Dollars', title = 'Average box office') 
   
-  ggplotly(B_plot)
+  B_plot <- B_plot + theme(legend.position = 'bottom')
+  
+  B_plot
+  ggplotly(B_plot)  %>%
+    layout(legend = list(
+      orientation = "h",
+      y = 1
+    )
+    )
   
 }
 
@@ -161,7 +169,7 @@ violinplot <- function(genre = 'Comedy', year_info = list(1950,2010)) {
     theme_bw() +
     coord_flip()
 
-  ggplotly(C_plot)
+  ggplotly(C_plot, width=750)
 }
 
 violinplot()
@@ -187,54 +195,72 @@ app$layout(
       htmlDiv(
         list(
             htmlH3("Logo here"),
-            htmlH2("Welcome Text"),
+            htmlH1("Interactive Movie DashBoard"),
             htmlH4("Smaller Text")
-            ), style = list('columnCount'=3, 'background-color'= 'lightblue')
+            ), style = list('columnCount'=3, 'background-color'= 'black', 'color'='white')
           ),
   
       htmlDiv(
         list(
           htmlDiv(
             list(
+              htmlDiv(
+                list(
                   htmlP("Select a genre from the dropdown:"),
                   dccDropdown(),
                   htmlP("Select a range of years"),
                   dccRangeSlider(),
                   htmlP("Testing, testing")
-          ), style = list('background-color'='red', 'columnCount'=1, 'width'='20%')
+            ), style = list('background-color'='lightgrey', 'columnCount'=1, 'width'='20%')
       ),
+      htmlDiv(
+        list(
         htmlDiv(
           list(
-                    htmlP("Hist"),
+            htmlDiv(
+              list(
+                    htmlP("Histogram"),
                     graph_hist
-                  ), style=list('columnCount'=1, 'width'='60%')
-          )
+                  ), style=list('width'='100%')
+          ),
+      htmlDiv(
+        list(
+                    htmlP("Area chart"),
+                    graph_area
+                  ), style=list('width'='100%')
+      )
+      ), style = list('display'='flex')
+      ),
+      htmlDiv(
+        list(
+        
+      htmlDiv(
+        list(
+          htmlP('Violin graph'),
+          graph_violin
+          ), style = list('width' = "100%")
+      ),
       
-        #   htmlDiv(
-        #     list(
-        #       htmlP("Area"),
-        #       graph_area
-        #     ), style = list("width"="30%")
-        #   )
-        # ), style = list("background-color"= "lightgrey", 'columnCount'=4)
-      # ),
-      # htmlDiv(
-      #   list(
-      #     htmlP('Violin graph'),
-      #     graph_violin
-      #     ), style = list('width' = "100%", "background-color"= "lightgrey", 'columnCount' = 1)
-      # ),
-      #     htmlDiv(
-      #     dccMarkdown("[Data Source](https://github.com/vega/vega-datasets/blob/master/data/movies.json)")
-            ), style = list('display'='flex')#, style = list('width'="30%", 'background-color'='lightgrey')
+      htmlDiv(
+        list(
+          htmlP('Summary Text')
+          
+        ), style = list('columnCount' = 1)
+      )
+      ), style = list('display'='flex')
+      )
+          # htmlDiv(
+          # dccMarkdown("[Data Source](https://github.com/vega/vega-datasets/blob/master/data/movies.json)")
+            
+          )#, style = list('width'="30%", 'background-color'='lightgrey', 'display'='flex')
         )
-    )
+            ), style=list('display'='flex')
+          )
+    ), style = list('display'='flex')
   )
 )
-  
-  
-
-
+)
+)
 
 
 app$run_server()
