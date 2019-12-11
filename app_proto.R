@@ -189,52 +189,31 @@ app$layout(
             htmlH3("Logo here"),
             htmlH2("Welcome Text"),
             htmlH4("Smaller Text")
-            ), style = list('columnCount'=3)
-          )
-        )
-      ),
-  
-      # htmlDiv(
-      #   list(
-      #     htmlA(
-      #       htmlButton(
-      #         "Useless Button", id='useless-button'
-      #       )
-      #     )
-      #     )
-      #   ),
+            ), style = list('columnCount'=3, 'background-color'= 'lightblue')
+          ),
   
       htmlDiv(
         list(
-          htmlDiv(
-            list(
-              htmlDiv(
-                list(
-              htmlP("Select a genre from the dropdown:"),
-              dccDropdown()
-            ), style = list('width' = "20%")
+                  htmlP("Select a genre from the dropdown:"),
+                  dccDropdown(),
+                  htmlP("Select a range of years"),
+                  dccRangeSlider(),
+                  htmlP("Testing, testing")
+                ), style = list('background-color'='red', 'columnCount'=1, 'width'='20%')
+      ),
+        htmlDiv(
+          list(
+                    htmlP("Hist"),
+                    graph_hist
+                  ), style=list('columnCount'=1, 'width'='70%')
           )
-          )
-          ),
-          htmlDiv(
-            list(
-              htmlP("Select a range of years"),
-              dccRangeSlider()
-            ), style = list('width' = "20%")
-          ),
-          htmlDiv(
-            list(
-              htmlP("Hist"),
-              graph_hist
-            ), style = list('width'="20%")
-          ),
-          htmlDiv(
-            list(
-              htmlP("Area"),
-              graph_area
-            ), style = list("width"="20%")
-          )
-        ), style = list("background-color"= "lightgrey", 'columnCount'=4)
+        #   htmlDiv(
+        #     list(
+        #       htmlP("Area"),
+        #       graph_area
+        #     ), style = list("width"="30%")
+        #   )
+        # ), style = list("background-color"= "lightgrey", 'columnCount'=4)
       # ),
       # htmlDiv(
       #   list(
@@ -244,8 +223,10 @@ app$layout(
       # ),
       #     htmlDiv(
       #     dccMarkdown("[Data Source](https://github.com/vega/vega-datasets/blob/master/data/movies.json)")
-            )
+            )#, style = list('width'="30%", 'background-color'='lightgrey')
         )
+  )
+  
 
 
 
