@@ -12,7 +12,6 @@ library("viridis")
 
 app <- Dash$new(external_stylesheets = "https://codepen.io/chriddyp/pen/bWLwgP.css")
 
-
 df <- read_csv("movies.csv")
 
 genre <- 'Comedy'
@@ -54,16 +53,16 @@ count_per_genre <- function(genre = 'Comedy', year_info = c(1950,2010)) {
   #Used for highlighting specific genre
   A <- A %>%
     mutate(to_highlight = ifelse(Major_Genre == genre,"Yes", "No"))
-  
+
   #Return the ggplot
   A <- ggplot(A, aes(Major_Genre, count_per_genre, fill = to_highlight)) +
     geom_bar(stat= 'identity', position = 'dodge') +
     scale_fill_manual(values = c("Yes" = "orange", "No" = "Grey"), guide = FALSE) +
     labs(y = "Number of movies produced", x = "", title = 'Popularity of Genres') +
     coord_flip() + 
-    theme_bw(20)
+    theme_bw()
 
-    ggplotly(A, width = 1000, height = 700)
+    ggplotly(A)
 }
 
 
@@ -108,9 +107,9 @@ average_box_office <- function(genre = 'Comedy', year_info = list(1980,2010)) {
   B_plot <- ggplot(B, aes(year, amount, fill = Gross)) +
     geom_area() +
     labs(x = "Year", y = 'Dollars', title = 'Average box office')  +
-    theme_bw(20)
+    theme_bw()
   
-  ggplotly(B_plot, width = 1000, height = 700)
+  ggplotly(B_plot)
   
 }
 
@@ -159,10 +158,10 @@ violinplot <- function(genre = 'Comedy', year_info = list(1950,2010)) {
          x = "",
          title = 'Critical reception vs. Genre',
          legend = 'Profit ratio') + 
-    theme_bw(20) +
+    theme_bw() +
     coord_flip()
 
-  ggplotly(C_plot, width = 1000, height = 700)
+  ggplotly(C_plot)
 }
 
 violinplot()
@@ -180,19 +179,75 @@ graph_violin <- dccGraph(id='violin',
                             figure=violin)
 
 count_per_genre(genre, year_info)
+
+
 app$layout(
   htmlDiv(
     list(
-      htmlH1("Test title"),
-      htmlH2('Test H2'),
-      graph_hist,
-      graph_area,
-      graph_violin,
-      htmlDiv(),
-      dccMarkdown("[Data Source](https://github.com/vega/vega-datasets/blob/master/data/movies.json)")
-    )
-  )
-)
+      htmlDiv(
+        list(
+            htmlH3("Logo here"),
+            htmlH2("Welcome Text"),
+            htmlH4("Smaller Text")
+            ), style = list('columnCount'=3)
+          )
+        )
+      ),
+  
+      # htmlDiv(
+      #   list(
+      #     htmlA(
+      #       htmlButton(
+      #         "Useless Button", id='useless-button'
+      #       )
+      #     )
+      #     )
+      #   ),
+  
+      htmlDiv(
+        list(
+          htmlDiv(
+            list(
+              htmlDiv(
+                list(
+              htmlP("Select a genre from the dropdown:"),
+              dccDropdown()
+            ), style = list('width' = "20%")
+          )
+          )
+          ),
+          htmlDiv(
+            list(
+              htmlP("Select a range of years"),
+              dccRangeSlider()
+            ), style = list('width' = "20%")
+          ),
+          htmlDiv(
+            list(
+              htmlP("Hist"),
+              graph_hist
+            ), style = list('width'="20%")
+          ),
+          htmlDiv(
+            list(
+              htmlP("Area"),
+              graph_area
+            ), style = list("width"="20%")
+          )
+        ), style = list("background-color"= "lightgrey", 'columnCount'=4)
+      # ),
+      # htmlDiv(
+      #   list(
+      #     htmlP('Violin graph'),
+      #     graph_violin
+      #     ), style = list('width' = "100%", "background-color"= "lightgrey", 'columnCount' = 1)
+      # ),
+      #     htmlDiv(
+      #     dccMarkdown("[Data Source](https://github.com/vega/vega-datasets/blob/master/data/movies.json)")
+            )
+        )
+
+
 
 
 app$run_server()
