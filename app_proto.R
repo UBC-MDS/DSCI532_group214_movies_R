@@ -12,7 +12,6 @@ library("viridis")
 
 app <- Dash$new(external_stylesheets = "https://codepen.io/chriddyp/pen/bWLwgP.css")
 
-
 df <- read_csv("movies.csv")
 
 genre <- 'Comedy'
@@ -54,19 +53,20 @@ count_per_genre <- function(genre = 'Comedy', year_info = c(1950,2010)) {
   #Used for highlighting specific genre
   A <- A %>%
     mutate(to_highlight = ifelse(Major_Genre == genre,"Yes", "No"))
-  
+
   #Return the ggplot
   A <- ggplot(A, aes(Major_Genre, count_per_genre, fill = to_highlight)) +
     geom_bar(stat= 'identity', position = 'dodge') +
-    scale_fill_manual(values = c("Yes" = "orange", "No" = "Grey"), guide = FALSE) +
+    scale_fill_manual(values = c("Yes" = "orange", "No" = "Grey")) +
     labs(y = "Number of movies produced", x = "", title = 'Popularity of Genres') +
-    coord_flip() + 
-    theme_bw(20)
-
-    ggplotly(A, width = 1000, height = 700)
+    coord_flip() 
+  
+    A <- A + theme(legend.position = 'none')
+    
+    ggplotly(A)
 }
 
-
+count_per_genre
 
 
 average_box_office <- function(genre = 'Comedy', year_info = list(1980,2010)) {
@@ -107,10 +107,17 @@ average_box_office <- function(genre = 'Comedy', year_info = list(1980,2010)) {
   #Return the ggplot
   B_plot <- ggplot(B, aes(year, amount, fill = Gross)) +
     geom_area() +
-    labs(x = "Year", y = 'Dollars', title = 'Average box office')  +
-    theme_bw(20)
+    labs(x = "Year", y = 'Dollars', title = 'Average box office') 
   
-  ggplotly(B_plot, width = 1000, height = 700)
+  B_plot <- B_plot + theme(legend.position = 'bottom')
+  
+  B_plot
+  ggplotly(B_plot)  %>%
+    layout(legend = list(
+      orientation = "h",
+      y = 1
+    )
+    )
   
 }
 
@@ -159,10 +166,10 @@ violinplot <- function(genre = 'Comedy', year_info = list(1950,2010)) {
          x = "",
          title = 'Critical reception vs. Genre',
          legend = 'Profit ratio') + 
-    theme_bw(20) +
+    theme_bw() +
     coord_flip()
 
-  ggplotly(C_plot, width = 1000, height = 700)
+  ggplotly(C_plot, width=750)
 }
 
 violinplot()
@@ -180,18 +187,79 @@ graph_violin <- dccGraph(id='violin',
                             figure=violin)
 
 count_per_genre(genre, year_info)
+
+
 app$layout(
   htmlDiv(
     list(
-      htmlH1("Test title"),
-      htmlH2('Test H2'),
-      graph_hist,
-      graph_area,
-      graph_violin,
-      htmlDiv(),
-      dccMarkdown("[Data Source](https://github.com/vega/vega-datasets/blob/master/data/movies.json)")
-    )
+      htmlDiv(
+        list(
+            htmlH3("Logo here"),
+            htmlH1("Interactive Movie DashBoard"),
+            htmlH4("Smaller Text")
+            ), style = list('columnCount'=3, 'background-color'= 'black', 'color'='white')
+          ),
+  
+      htmlDiv(
+        list(
+          htmlDiv(
+            list(
+              htmlDiv(
+                list(
+                  htmlP("Select a genre from the dropdown:"),
+                  dccDropdown(),
+                  htmlP("Select a range of years"),
+                  dccRangeSlider(),
+                  htmlP("Testing, testing")
+            ), style = list('background-color'='lightgrey', 'columnCount'=1, 'width'='20%')
+      ),
+      htmlDiv(
+        list(
+        htmlDiv(
+          list(
+            htmlDiv(
+              list(
+                    htmlP("Histogram"),
+                    graph_hist
+                  ), style=list('width'='100%')
+          ),
+      htmlDiv(
+        list(
+                    htmlP("Area chart"),
+                    graph_area
+                  ), style=list('width'='100%')
+      )
+      ), style = list('display'='flex')
+      ),
+      htmlDiv(
+        list(
+        
+      htmlDiv(
+        list(
+          htmlP('Violin graph'),
+          graph_violin
+          ), style = list('width' = "100%")
+      ),
+      
+      htmlDiv(
+        list(
+          htmlP('Summary Text')
+          
+        ), style = list('columnCount' = 1)
+      )
+      ), style = list('display'='flex')
+      )
+          # htmlDiv(
+          # dccMarkdown("[Data Source](https://github.com/vega/vega-datasets/blob/master/data/movies.json)")
+            
+          )#, style = list('width'="30%", 'background-color'='lightgrey', 'display'='flex')
+        )
+            ), style=list('display'='flex')
+          )
+    ), style = list('display'='flex')
   )
+)
+)
 )
 
 
