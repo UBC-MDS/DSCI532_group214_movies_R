@@ -3,12 +3,8 @@ library(dash)
 library(dashCoreComponents)
 library(dashHtmlComponents)
 library(tidyverse)
-library(dplyr)
 library(plotly)
-library(gapminder)
 library(ggplot2)
-library(ggridges)
-library("viridis")
 
 app <- Dash$new(external_stylesheets = "https://codepen.io/chriddyp/pen/bWLwgP.css")
 
