@@ -1,0 +1,16 @@
+
+{
+  "name": "Testing deployment of DashR app to heroku",
+  "description": "This app does one little thing, and does it well.",
+  "keywords": [
+    "heroku",
+    "R deployment",
+    "Dash R"
+],
+"buildpacks": [
+    {
+      "url": "https://github.com/virtualstaticvoid/heroku-buildpack-r.git#heroku-16"
+    }
+  ],
+  "stack": "heroku-16"
+}
