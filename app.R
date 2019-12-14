@@ -156,6 +156,7 @@ violinplot <- function(genre = 'Action', year_info = list(1950,2000)) {
     scale_fill_manual(values = c("Yes" = "orange", "No" = "Grey"), guide = FALSE) +
     coord_flip() +
     labs(y = 'Profit Ratio',
+         x = '',
          title = 'Profit vs. Genre',
          legend = 'Genre') + 
     theme_bw(20)
@@ -165,15 +166,18 @@ violinplot <- function(genre = 'Action', year_info = list(1950,2000)) {
 
 histogram <- count_per_genre(genre, year_info)
 graph_hist <- dccGraph(id='histogram',
-                       figure=histogram)
+                       figure=histogram,
+                       config = list('displaylogo' = FALSE))
 
 area <- average_box_office()
 graph_area <- dccGraph(id='area',
-                       figure=area)
+                       figure=area,
+                       config = list('displaylogo' = FALSE))
 
 violin <- violinplot()
 graph_violin <- dccGraph(id='violin',
-                         figure=violin)
+                         figure=violin,
+                         config = list('displaylogo' = FALSE))
 
 yearMarks <- map(seq(1930, 2010, by = 20), as.character)
 names(yearMarks) <- seq(1930, 2010, by = 20)
@@ -201,9 +205,9 @@ app$layout(
     list(
       htmlDiv(
         list(
-          htmlImg(src='https://i.imgur.com/N2UOAry.jpg'),
+          htmlImg(src='https://i.imgur.com/N2UOAry.jpg', height = 100),
           htmlH1("Interactive Movie DashBoard"),
-          htmlH4("Smaller Text")
+          dccMarkdown("[GitHub](https://github.com/UBC-MDS/DSCI532_group214_movies_R)")
         ), style = list('columnCount'=3, 'background-color'= 'black', 'color'='white')
       ),
       
@@ -217,7 +221,12 @@ app$layout(
                   genreDropdown,
                   htmlH4(" "),
                   htmlP("Select a range of years"),
-                  yearSlider
+                   htmlDiv(
+                     list(
+                      htmlDiv(yearSlider)
+                    ), style=list('width'='85%', 'margin-left'='15px')
+                  )
+                    
                 ), style = list('background-color'='lightgrey', 'columnCount'=1, 'width'='20%')
               ),
               htmlDiv(
@@ -226,13 +235,11 @@ app$layout(
                     list(
                       htmlDiv(
                         list(
-                          htmlP("Histogram"),
                           graph_hist
                         ), style=list('width'='100%')
                       ),
                       htmlDiv(
                         list(
-                          htmlP("Area chart"),
                           graph_area
                         ), style=list('width'='100%')
                       )
@@ -243,7 +250,6 @@ app$layout(
                       
                       htmlDiv(
                         list(
-                          htmlP('Violin graph'),
                           graph_violin
                         ), style = list('width' = "100%")
                       ),
