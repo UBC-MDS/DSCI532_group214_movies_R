@@ -163,7 +163,7 @@ violinplot <- function(genre = 'Action', year_info = list(1950,2000)) {
   ggplotly(C_plot, width = 600, height = 500) %>% layout(showlegend = FALSE)
 }
 
-biggest_success <- function(year_info = list(1900,2010), genre_input = 'Drama'){
+biggest_success <- function(year_info = list(1950,2000), genre_input = 'Drama'){
   #     This function returns the greatest box office from the movies dataset based on filtering inputs, 
   #         formatted to help create an info table
   #     -------
@@ -179,18 +179,16 @@ biggest_success <- function(year_info = list(1900,2010), genre_input = 'Drama'){
   
   k <- df %>%
     filter(year >= year_info[1] & year <= year_info[2] ) 
-  
+  k <- k %>% filter(Major_Genre == genre_input)  
   k <- k %>%
-    mutate(profit = Worldwide_Gross - Production_Budget) %>%
-    desc(profit)
+    arrange(desc(Worldwide_Gross))
   
   topsuccessgross <- round(k[[1,'Worldwide_Gross']]/1000000 , 2)
   topsuccessbudget <- round(k[[1,'Production_Budget']]/1000000, 2)
   topsuccessname <- k[[1,'Title']]
   
-  paste(" ======== " , genre_input , " Movies from " , year_info[1], ' to ' , year_info[2]  ,
-        " ======== \nTop Grossing Film: " , topsuccessname , 
-        "\nBox Office returns: $" , round(topsuccessgross, 2) , "M")
+  paste0("\nTop Grossing Film: " , topsuccessname , " -- ",
+             "\nBox Office: $" , round(topsuccessgross, 2) , "M")
 }
 
 biggest_flop <- function(year_info = list(1900,2010), genre_input = 'Drama') {
@@ -211,19 +209,19 @@ biggest_flop <- function(year_info = list(1900,2010), genre_input = 'Drama') {
   #Condition to have data between those years
   k <- df %>%
     filter(year >= year_info[1] & year <= year_info[2] ) 
-  
+  k <- k %>% filter(Major_Genre == genre_input)  
   k <- k %>%
     mutate(profit = Worldwide_Gross - Production_Budget) %>%
-    desc(profit)
+    arrange(profit)
   
   topflopgross <- round(k[[1,'Worldwide_Gross']]/1000000 , 2)
   topflopbudget <- round(k[[1,'Production_Budget']]/1000000, 2)
   topflopname <- k[[1,'Title']]
   
-  paste(" ============== Biggest flop ============== " , 
-        "\nTitle: " , topflopname , 
-        "\nBox Office: $" , topflopgross , 
-        " M\nBudget: $" , topflopbudget , " M")
+  paste0( 
+              "\nTitle: " , topflopname , " -- ",
+              "\nBox Office: $" , topflopgross ,
+              " M -- \nBudget: $" , topflopbudget , " M")
   
 }
 
@@ -243,14 +241,34 @@ how_big <- function(year_info = list(1900,2010), genre_input = 'Drama'){
   #Condition to have data between those years
   k <- df %>%
     filter(year >= year_info[1] & year <= year_info[2] ) 
+  k <- k %>% filter(Major_Genre == genre_input)  
   
-  k <- k %>%
-    mutate(profit = Worldwide_Gross - Production_Budget)
-  
-  total_boxoffice <- sum(k$profit)/1000000000
+  total_boxoffice <- round(sum(k$Worldwide_Gross)/1000000000,2)
   
   
-  paste("=========== Total =========== " , "\nWorldwide box office: $" , total_boxoffice , "B" )
+  paste0("Total box office: $" , total_boxoffice , "B" )
+}
+
+average_returns <- function(year_info = list(1900,2010), genre_input = 'Drama'){
+  #     This function returns average total box office from the movies dataset based on filtering inputs, 
+  #         formatted to help create an info table
+  #     ------------
+  #     Inputs :
+  #         year_info : List with 2 values, takes in the year information from the callback above
+  #                     [1970,1985]
+  #         genre_input : (To be programmed) : takes in the genre information from the callback above
+  #                     'Drama', 'Any'
+  #     ------------
+  #     Returns
+  #         A specifically formatted string
+  
+  k <- df %>%
+    filter(year >= year_info[1] & year <= year_info[2] ) 
+  k <- k %>% filter(Major_Genre == genre_input)
+  
+  avg_returns <- round(mean(k$Worldwide_Gross, na.rm = TRUE)/1000000000,3)
+  
+  paste0("Average box office: $" , avg_returns , "M" )
 }
 
 histogram <- count_per_genre(genre, year_info)
@@ -354,9 +372,12 @@ app$layout(
                       
                       htmlDiv(
                         list(
-                          htmlP('Quick Facts'),
+                          htmlH2('Quick Facts'),
+                          htmlP(id = "line0"),
                           htmlP(id = "line1"),
+                          htmlP(" ============== Biggest flop ============== " ),
                           htmlP(id = "line2"),
+                          htmlP(" ============== Summary Stats ============== " ),
                           htmlP(id = "line3"),
                           htmlP(id = "line4")
                           
@@ -435,6 +456,27 @@ app$callback(
   params=list(input(id = 'genre', property = 'value'), input(id = 'year', property='value')),
   function(genre, year_value) {
     average_returns(year_value, genre)
+  }
+)
+
+app$callback(
+  output=list(id = 'line0', property = 'children'),
+  #based on values of year range and genre
+  params=list(input(id = 'genre', property = 'value'), input(id = 'year', property='value')),
+  function(genre_input, year_value) {
+    k <- df %>%
+      filter(year >= year_info[1] & year <= year_info[2] ) 
+    k <- k %>% filter(Major_Genre == genre_input)  
+    k <- k %>%
+      mutate(profit = k$Worldwide_Gross - k$Production_Budget) %>%
+      arrange(desc(profit))
+    
+    topsuccessgross <- round(k[[1,'Worldwide_Gross']]/1000000 , 2)
+    topsuccessbudget <- round(k[[1,'Production_Budget']]/1000000, 2)
+    topsuccessname <- k[[1,'Title']]
+    
+    paste0(" ======== " , genre_input , " Movies from " , year_info[1], ' to ' , year_info[2]  ,
+           " ======== ")
   }
 )
 
