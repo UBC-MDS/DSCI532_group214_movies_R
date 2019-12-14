@@ -8,7 +8,7 @@ library(ggplot2)
 
 app <- Dash$new(external_stylesheets = "https://codepen.io/chriddyp/pen/bWLwgP.css")
 
-df <- read_csv("movies.csv")
+df <- read_csv("https://raw.githubusercontent.com/UBC-MDS/DSCI532_group214_movies_R/master/movies.csv")
 df <- df %>% drop_na(Major_Genre)
 
 genre <- 'Action'
