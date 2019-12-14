@@ -159,9 +159,9 @@ violinplot <- function(genre = 'Action', year_info = list(1950,2000)) {
          x = '',
          title = 'Profit vs. Genre',
          legend = 'Genre') + 
-    theme_bw(20)
+    theme_bw(15)
   
-  ggplotly(C_plot, width = 1000, height = 700) %>% layout(showlegend = FALSE)
+  ggplotly(C_plot, width = 650, height = 700) %>% layout(showlegend = FALSE)
 }
 
 histogram <- count_per_genre(genre, year_info)
@@ -206,8 +206,7 @@ app$layout(
       htmlDiv(
         list(
           htmlImg(src='https://i.imgur.com/N2UOAry.jpg', height = 100),
-          htmlH1("Interactive Movie DashBoard"),
-          dccMarkdown("[GitHub](https://github.com/UBC-MDS/DSCI532_group214_movies_R)")
+          htmlH2("Interactive Movie DashBoard")
         ), style = list('columnCount'=3, 'background-color'= 'black', 'color'='white')
       ),
       
@@ -225,9 +224,19 @@ app$layout(
                      list(
                       htmlDiv(yearSlider)
                     ), style=list('width'='85%', 'margin-left'='15px')
-                  )
+                  ),
+                  htmlBr(),
+                  htmlBr(),
+                  dccMarkdown("If you are interested in investing in the movie industry, your search ends right here! As a new investor, there are several fundamental questions you would like answered:"),
+                  dccMarkdown("1. What genre has been most profitable?"),
+                  dccMarkdown("2. How much does audience reception affect profit?"),
+                  dccMarkdown("3. What are the popularity levels of genres that typically produced?"),
+                  dccMarkdown("To use the dashboard, select a genre from the dropdown, then select the range of years you would like to see."),
+                  dccMarkdown("This dashboard was make corroboratively by Vignesh Chandrasekaran, James Huang, and Matthew Connell."),
+                  dccMarkdown("[Data Source](https://github.com/vega/vega-datasets/blob/master/data/movies.json)"),
+                  dccMarkdown("[Github Repo for this app](https://github.com/UBC-MDS/DSCI532_group214_movies)")
                     
-                ), style = list('background-color'='lightgrey', 'columnCount'=1, 'width'='20%')
+                ), style = list('background-color'='lightgrey', 'columnCount'=1, 'width'='20%', 'white-space'='pre-line')
               ),
               htmlDiv(
                 list(
@@ -256,16 +265,16 @@ app$layout(
                       
                       htmlDiv(
                         list(
-                          htmlP('Summary Text')
+                          htmlP('Summary Text'),
+                          htmlP("the highest grossing film of 2008 was Titanic"),
+                          htmlP('the biggest flop of something something was pluto nash')
                           
-                        ), style = list('columnCount' = 1)
+                        ), style = list('columnCount' = 1, 'width'='100%')
                       )
                     ), style = list('display'='flex')
                   )
-                  # htmlDiv(
-                  # dccMarkdown("[Data Source](https://github.com/vega/vega-datasets/blob/master/data/movies.json)")
-                  
-                )#, style = list('width'="30%", 'background-color'='lightgrey', 'display'='flex')
+                 
+                )
               )
             ), style=list('display'='flex')
           )
